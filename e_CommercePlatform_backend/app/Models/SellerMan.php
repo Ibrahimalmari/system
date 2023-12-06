@@ -8,4 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class SellerMan extends Model
 {
     use HasFactory;
+
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'address',
+        'gender',
+        'phone',
+        'PhotoOfPersonalID',
+        'birthday',
+        'personalNumber',
+    ];
+
+
 }

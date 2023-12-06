@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('address');
             $table->enum('gender',['male','female']);
             $table->string('phone');
-            $table->string('personal_identity_photo');
+            $table->string('PhotoOfPersonalID')->nullable();
             $table->date('birthday');
             $table->enum('status',['Active' ,'Inactive'])->default('Inactive');
             $table->timestamps();
