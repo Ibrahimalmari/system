@@ -16,8 +16,12 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\SellerManController;
 
-Route::POST('/seller',[SellerManController::class,'store']);
+Route::resource('seller',SellerManController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+
+
+
+
 });

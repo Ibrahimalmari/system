@@ -17,7 +17,7 @@ class SellerMan extends Model
         'address',
         'gender',
         'phone',
-        'personal_identity_photo',
+        'PhotoOfPersonalID',
         'birthday',
         'personalNumber',
     ];

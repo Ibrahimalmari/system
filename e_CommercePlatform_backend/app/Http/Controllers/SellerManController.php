@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SellerMan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 
 class SellerManController extends Controller
 {
@@ -34,25 +38,23 @@ class SellerManController extends Controller
      */
     public function store(Request $request)
     {
-        // $image_name = time().'.'.$request->file('image');  
-        // $request->file->move(public_path('uploads'), $image_name);
-            
-        return  $request;
+        $image = $request->file('image')->getClientOriginalName();
+        $path =$request->file('image')->storeAs('seller',$image ,'public');
 
-        //   $seller = SellerMan::create([
-        //     'name' => $request->name,
-        //     'email'=> $request->email,
-        //     'password'=> $request->password,
-        //     'address'=> $request->address,
-        //     'gender'=> $request->gender,
-        //     'phone'=> $request->phone,
-        //     'personal_identity_photo'=>$image,
-        //     'birthday'=> $request->birthday,
-        //     'personalNumber'=> $request->personalNumber	,
-        //   ]);
+          $seller = SellerMan::create([
+            'name' => $request->name,
+            'email'=> $request->email,
+            'password'=> $request->password,
+            'address'=> $request->address,
+            'gender'=> $request->gender,
+            'phone'=> $request->phone,
+            'PhotoOfPersonalID'=>$path,
+            'birthday'=> $request->birthday,
+            'personalNumber'=> $request->personalNumber	,
+          ]);
 
-        //   $seller->save();  
-        //   return response()->json($seller);
+          $seller->save();  
+          return response()->json($seller);
 
     }
 
