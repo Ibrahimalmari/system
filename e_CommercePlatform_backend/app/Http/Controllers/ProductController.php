@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class ProductController extends Controller
 {
@@ -37,7 +39,49 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = Validator::make($request->all(),[
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required',
+            'quantity' =>'required',
+            'images' => 'required',
+    ]);
+
+    if($validatedData->fails()){
+        return response()->json([
+            'validation_error'=>$validatedData->messages(),
+        ]);
+    }
+
+    else{
+
+        $fileImages = [];
+        foreach($request->file('image') as $images){
+        $imageName = $images->getClientOriginalName();
+        $path =$images->storeAs('store',$imageName ,'public');
+              
+        $fileImages[] = $path;
+        }
+         $img = json_encode($fileImages);
+          $seller = Product::create([
+            'name' => $request->name,
+            'description'=> $request->description,
+            'price'=> $request->price,
+            'quantity'=> $request->quantity,
+            'phone'=> $request->phone,
+            'images'=>$img,
+            'category_id'=> $request->category_id,
+            'brunch_id'=> $request->brunch_id,
+             'store_id	'=> $request->store_id,
+          ]);
+
+
+          return response()->json([
+            'status' => 200, 
+            'message'=>'Product added successfully',
+        ]);
+
+        }
     }
 
     /**

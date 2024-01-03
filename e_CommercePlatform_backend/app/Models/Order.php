@@ -9,6 +9,15 @@ class Order extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'AddressName',
+        'AddressGoogle',
+        'area',
+        'description',
+        'nearBy',
+        'street',
+    ];
+
     public function user(){
         return $this->belongsTo(User::class);
      }
