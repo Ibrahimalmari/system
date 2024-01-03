@@ -9,6 +9,19 @@ class Store extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'address',
+        'personalNumber',
+        'type',
+        'phone',
+        'cover_photo',
+        'order_recive',
+        'order_done',
+        'order_reject',
+        'open_time',
+        'seller_id',
+    ];
 
 
     public function seller(){
@@ -16,7 +29,6 @@ class Store extends Model
     }
 
     public function product(){
-        $this->hasMany(Product::class , 'storeproducts');
+        $this->hasMany(Product::class);
     }
-
 }

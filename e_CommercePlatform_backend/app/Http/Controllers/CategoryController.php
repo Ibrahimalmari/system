@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -13,7 +17,13 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $category = Category::all();
+        return response()->json([
+           'status' => 200, 
+            'category' =>$category,
+           'message'=>'Registered Successfully',
+       ]);
+        
     }
 
     /**
@@ -23,7 +33,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        
+
     }
 
     /**
@@ -34,7 +45,47 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        
+        $validatedData = Validator::make($request->all(),[
+            'name' => 'required',
+            'slug' => 'required',
+            'description' => 'required',
+            'image' => 'required',
+          
+    ]);
+
+    if($validatedData->fails()){
+        return response()->json([
+            'validation_error'=>$validatedData->messages(),
+        ]);
+    }
+
+    else{
+
+        $fileImages = [];
+        $namecategory = $request->name;
+        foreach($request->file('image') as $images){
+        $imageName = $images->getClientOriginalName();
+        $path =$images->storeAs('category/',$imageName ,'public');
+        
+        $fileImages[] = $path;
+        }
+         $img = json_encode($fileImages);
+          $category = Category::create([
+            'name' => $request->name,
+            'slug'=> $request->slug,
+            'description'=> $request->description,
+            'image'=>$img,
+          ]);
+
+
+          return response()->json([
+            'status' => 200, 
+            'message'=>'Category added successfully',
+        ]);
+
+        }       
     }
 
     /**
