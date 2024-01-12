@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('store__sections', function (Blueprint $table) {
             $table->id();
-            $table->enum('status',['Processing' ,'Confirmed','Deliverd','Cancelled'])->default('Processing');
-            $table->foreignId('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('store_id')->constrained('stores')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('section_id')->constrained('sections')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('store__sections');
     }
 };

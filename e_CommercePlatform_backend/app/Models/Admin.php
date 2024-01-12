@@ -39,5 +39,11 @@ class Admin extends Authenticatable
         return  $this->belongsTo(Role::class);
       }
 
+     
+      public function create_store()    //كل مشرف يمكن انشاء اكثر من متجر
+      {
+          return $this->hasMany(Store::class);
+      }   
+
 
 }

@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Brunch;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Store_Section;
+use Illuminate\Http\Request;
 
-class BrunchController extends Controller
+class Store_Section_Controller extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,12 +14,7 @@ class BrunchController extends Controller
      */
     public function index()
     {
-        $brunch = Brunch::all();
-        return response()->json([
-           'status' => 200, 
-            'brunch' =>$brunch,
-           'message'=>'Registered Successfully',
-       ]);
+        //
     }
 
     /**
@@ -41,13 +35,10 @@ class BrunchController extends Controller
      */
     public function store(Request $request)
     {
-         
+       
         $validatedData = Validator::make($request->all(),[
-            'name' => 'required',
-            'image' => 'required',
-            'category_id'=>'required',
-
-          
+            'section_id' => 'required',
+            'store_id' => 'required',
     ]);
 
     if($validatedData->fails()){
@@ -58,27 +49,18 @@ class BrunchController extends Controller
 
     else{
 
-        $fileImages = [];
-        foreach($request->file('image') as $images){
-        $imageName = $images->getClientOriginalName();
-        $path =$images->storeAs('brunch',$imageName ,'public');
-              
-        $fileImages[] = $path;
-        }
-         $img = json_encode($fileImages);
-          $brunch = Brunch::create([
-            'name' => $request->name,
-            'category_id'=> $request->category_id,
-            'image'=>$img,
+          $store_section =Store_Section::create([
+            'section_id'=> $request->section_id,
+             'store_id'=>$request->store_id,
           ]);
 
 
           return response()->json([
             'status' => 200, 
-            'message'=>'Brunch added successfully',
+            'message'=>'section to store added successfully',
         ]);
 
-        } 
+        }
     }
 
     /**

@@ -15,10 +15,21 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index_admin()
     {
-        $category = Category::find(1);
-        return $category->product;
+        $product = Product::all();
+        return response()->json($product);   
+    }
+
+    public function index_seller($id)
+    {
+        $product =Product::where("created_by",$id)->get();
+
+        return response()->json([
+           'status' => 200, 
+            'product' =>$product,
+           'message'=>'Registered Successfully',
+       ]);   
     }
 
     /**
@@ -37,7 +48,7 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request ,$id)
     {
         $validatedData = Validator::make($request->all(),[
             'name' => 'required',
@@ -45,6 +56,9 @@ class ProductController extends Controller
             'price' => 'required',
             'quantity' =>'required',
             'images' => 'required',
+            'category_id' => 'required',
+            'branch_id' => 'required',
+            'store_id' => 'required',
     ]);
 
     if($validatedData->fails()){
@@ -58,9 +72,10 @@ class ProductController extends Controller
         $fileImages = [];
         foreach($request->file('image') as $images){
         $imageName = $images->getClientOriginalName();
-        $path =$images->storeAs('store',$imageName ,'public');
-              
-        $fileImages[] = $path;
+        $filename =  time() . '.' . $imageName;
+        $images->move(public_path('products'),$filename);
+    
+        $fileImages = $filename;
         }
          $img = json_encode($fileImages);
           $seller = Product::create([
@@ -69,15 +84,17 @@ class ProductController extends Controller
             'price'=> $request->price,
             'quantity'=> $request->quantity,
             'phone'=> $request->phone,
-            'images'=>$img,
+            'images'=>$fileImages,
             'category_id'=> $request->category_id,
-            'brunch_id'=> $request->brunch_id,
+            'branch_id'=> $request->branch_id,
              'store_id	'=> $request->store_id,
+             'created_by'=>$id,
           ]);
 
 
           return response()->json([
             'status' => 200, 
+            'user' =>$id,
             'message'=>'Product added successfully',
         ]);
 

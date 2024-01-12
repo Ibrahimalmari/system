@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import swal from "sweetalert";
-//  import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = ({ handleAddProduct }) => {
+        const navigate = useNavigate()
 
 
         const [name, setName] = useState('')
@@ -17,24 +18,36 @@ const AddProduct = ({ handleAddProduct }) => {
         const [stores, setStore] = useState([]); ///جلب  المتاجر
         const [selectedstore, setSelectedStore] = useState();
 
-        const [brunches, setBrunch] = useState([]); ///جلب   افرع الفئات
-        const [selectedbrunch, setSelectedBrunch] = useState();
+        const [branches, setBranch] = useState([]); ///جلب   افرع الفئات
+        const [selectedbranch, setSelectedBranch] = useState();
 
 
-        //   useEffect(() => {
-        //     axios.get("http://127.0.0.1:8000/api/category").then(res =>{
-        //        if(res.data.status === 200 ){
-        //         setCategory(res.data.category)
-        //        console.log(res.data.category)
-        //        }
-        //     })
-        //  }, [])
+        useEffect(() => {
+            Promise.all([
+                    axios.get("http://127.0.0.1:8000/api/category"),
+                    axios.get("http://127.0.0.1:8000/api/branch"),
+
+                ])
+                .then(([categoryRes, branchRes]) => {
+                    if (categoryRes.data.status === 200) {
+                        setCategory(categoryRes.data.category);
+                    }
+                    if (branchRes.data.status === 200) {
+                        setBranch(branchRes.data.branch);
+                    }
+
+                })
+                .catch((error) => {
+                    console.error(error);
+                    // يمكنك إضافة التعامل مع الأخطاء هنا
+                });
+        }, []);
 
         //  useEffect(() => {
-        //     axios.get("http://127.0.0.1:8000/api/brunch").then(res =>{
+        //     axios.get("http://127.0.0.1:8000/api/branch").then(res =>{
         //        if(res.data.status === 200 ){
-        //         setBrunch(res.data.brunch)
-        //        console.log(res.data.brunch)
+        //         setBranch(res.data.branch)
+        //        console.log(res.data.branch)
         //        }
         //     })
         //  }, [])
@@ -57,8 +70,8 @@ const AddProduct = ({ handleAddProduct }) => {
         const validateForm = () => {
             const validationErrors = {};
 
-            if (!image) {
-                validationErrors.image = "Image is required";
+            if (image.length === 0) {
+                validationErrors.image = 'Please upload at least one image';
             }
 
             if (!quantity.trim()) {
@@ -75,6 +88,16 @@ const AddProduct = ({ handleAddProduct }) => {
 
             if (!description.trim()) {
                 validationErrors.description = "Description is required";
+            }
+
+            if (!selectedcategory) {
+                validationErrors.selectedcategory = 'Please select a category';
+            }
+            if (!selectedstore) {
+                validationErrors.selectedstore = 'Please select a store';
+            }
+            if (!selectedbranch) {
+                validationErrors.selectedbranch = 'Please select a branch';
             }
 
 
@@ -94,6 +117,7 @@ const AddProduct = ({ handleAddProduct }) => {
 
         const handleSubmit = async(e) => {
             e.preventDefault();
+            const id = localStorage.getItem('id');
 
 
             const isFormValid = validateForm();
@@ -108,21 +132,22 @@ const AddProduct = ({ handleAddProduct }) => {
             formDataToSend.append('price', price);
             formDataToSend.append('quantity', quantity);
             formDataToSend.append('category_id', selectedcategory);
-            formDataToSend.append('brunch_id', selectedbrunch);
+            formDataToSend.append('branch_id', selectedbranch);
             formDataToSend.append('store_id', selectedstore);
             image.forEach((image) => {
                 formDataToSend.append('image[]', image);
             });
 
             try {
-                const response = await axios.post('http://127.0.0.1:8000/api/ProductAdd/', formDataToSend);
+                const response = await axios.post(`http://127.0.0.1:8000/api/ProductAdd/${id}`, formDataToSend);
                 if (response.data.status === 401) {
                     console.log(response.data);
                     swal("warning", response.data.message, "warning")
                 } else {
                     console.log(response.data);
-                    swal("success", response.data.message, "success")
-                        //  navigate('seller/Category/');
+                    swal("success", response.data.message, "success").then(() => {
+                        navigate('/seller/Product');
+                    })
                 }
             } catch (error) {
                 console.error(error.message);
@@ -148,8 +173,7 @@ const AddProduct = ({ handleAddProduct }) => {
                 /div> <
                 div className = 'card-body' >
                 <
-                form onSubmit = { handleSubmit }
-                encType = 'multipart/form-data' >
+                form onSubmit = { handleSubmit } >
                 <
                 div className = "row align-items-center mt-4" >
                 <
@@ -200,104 +224,120 @@ const AddProduct = ({ handleAddProduct }) => {
                                 <
                                 label > Image < /label> <
                                 input type = "file"
-                            name = "image"
-                            className = "form-control"
+                            multiple name = "image[]"
+                            className = { `form-control  ${errors.image ? "is-invalid" : ""}` }
                             onChange = { handleFileChange }
-                            /> <
-                            /div>   <
-                            /div> <
-                            div className = "row align-items-center mt-4" >
-                                <
-                                div className = 'col  mb-3' >
-                                <
-                                label > Quantity < /label> <
-                                input type = "number"
-                            name = "quantity"
-                            className = { `form-control  ${errors.quantity ? "is-invalid" : ""}` }
-                            value = { quantity }
-                            onChange = {
-                                (e) => { setQuantity(e.target.value) } }
                             /> {
-                                errors.quantity && < div className = "invalid-feedback" > { errors.quantity } < /div>} <
-                                    /div> <
-                                    div className = "col-md-6 mb-3" >
-                                    <
-                                    label > Select Category < /label> <
-                                    select
-                                className = "form-control"
-                                name = "category_id"
-                                value = { selectedcategory }
-                                onChange = {
-                                        (e) => { setSelectedCategory(e.target.value) } } >
-                                    <
-                                    option value = "" > Select Category < /option> {
-                                        categories.map((category) => ( <
-                                            option key = { category.id }
-                                            value = { category.id } > { category.name } <
-                                            /option>
-                                        ))
-                                    } <
-                                    /select> <
-                                    /div> <
+                                errors.image && < div className = "invalid-feedback" > { errors.image } < /div>} <
+                                    /div>   <
                                     /div> <
                                     div className = "row align-items-center mt-4" >
                                     <
-                                    div className = "col-md-6 mb-3" >
+                                    div className = 'col  mb-3' >
                                     <
-                                    label > Select Brunch < /label> <
-                                    select
-                                className = "form-control"
-                                name = "category_id"
-                                value = { selectedbrunch }
+                                    label > Quantity < /label> <
+                                    input type = "number"
+                                name = "quantity"
+                                className = { `form-control  ${errors.quantity ? "is-invalid" : ""}` }
+                                value = { quantity }
                                 onChange = {
-                                        (e) => { setSelectedBrunch(e.target.value) } } >
-                                    <
-                                    option value = "" > Select Brunch < /option> {
-                                        brunches.map((brunch) => ( <
-                                            option key = { brunch.id }
-                                            value = { brunch.id } > { brunch.name } <
-                                            /option>
-                                        ))
-                                    } <
-                                    /select> <
-                                    /div> <
-                                    div className = "col-md-6 mb-3" >
-                                    <
-                                    label > Select Store < /label> <
-                                    select
-                                className = "form-control"
-                                name = "category_id"
-                                value = { selectedstore }
-                                onChange = {
-                                        (e) => { setSelectedStore(e.target.value) } } >
-                                    <
-                                    option value = "" > Select Store < /option> {
-                                        stores.map((store) => ( <
-                                            option key = { store.id }
-                                            value = { store.id } > { store.name } <
-                                            /option>
-                                        ))
-                                    } <
-                                    /select> <
-                                    /div> <
-                                    /div> {
-                                        /* <div class="col form-check form-switch mt-3 ml-5 ">
-                                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"/>
-                                                                <label class="form-check-label " for="flexSwitchCheckDefault">Active /InAcive</label>
-                                                            </div> */
-                                    } <
-                                    div className = 'col-md-12 mb-3' >
-                                    <
-                                    button type = "submit"
-                                className = "btn btn-secondary float-end" > Sava < /button> <
-                                    /div> <
-                                    /form> <
-                                    /div> <
-                                    /div> <
-                                    /div> <
-                                    /div> <
-                                    /div> 
-                            )
-                        }
+                                    (e) => { setQuantity(e.target.value) } }
+                                /> {
+                                    errors.quantity && < div className = "invalid-feedback" > { errors.quantity } < /div>} <
+                                        /div> <
+                                        div className = "col-md-6 mb-3" >
+                                        <
+                                        label > Select Category < /label> <
+                                        select
+                                    className = { `form-control  ${errors.selectedcategory ? "is-invalid" : ""}` }
+                                    name = "category_id"
+                                    value = { selectedcategory }
+                                    onChange = {
+                                            (e) => { setSelectedCategory(e.target.value) } } >
+                                        <
+                                        option value = "" > Select Category < /option> {
+                                            categories.map((category) => ( <
+                                                option key = { category.id }
+                                                value = { category.id } > { category.name } <
+                                                /option>
+                                            ))
+                                        } <
+                                        /select> {
+                                            errors.selectedcategory && ( <
+                                                div className = 'invalid-feedback' > { errors.selectedcategory } <
+                                                /div>
+                                            )
+                                        } <
+                                        /div> <
+                                        /div> <
+                                        div className = "row align-items-center mt-4" >
+                                        <
+                                        div className = "col-md-6 mb-3" >
+                                        <
+                                        label > Select Branch < /label> <
+                                        select
+                                    className = { `form-control  ${errors.selectedbranch ? "is-invalid" : ""}` }
+                                    name = "category_id"
+                                    value = { selectedbranch }
+                                    onChange = {
+                                            (e) => { setSelectedBranch(e.target.value) } } >
+                                        <
+                                        option value = "" > Select Branch < /option> {
+                                            branches.map((branch) => ( <
+                                                option key = { branch.id }
+                                                value = { branch.id } > { branch.name } <
+                                                /option>
+                                            ))
+                                        } <
+                                        /select> {
+                                            errors.selectedbranch && ( <
+                                                div className = 'invalid-feedback' > { errors.selectedbranch } <
+                                                /div>
+                                            )
+                                        } <
+                                        /div> <
+                                        div className = "col-md-6 mb-3" >
+                                        <
+                                        label > Select Store < /label> <
+                                        select
+                                    className = { `form-control  ${errors.selectedstore ? "is-invalid" : ""}` }
+                                    name = "category_id"
+                                    value = { selectedstore }
+                                    onChange = {
+                                            (e) => { setSelectedStore(e.target.value) } } >
+                                        <
+                                        option value = "" > Select Store < /option> {
+                                            stores.map((store) => ( <
+                                                option key = { store.id }
+                                                value = { store.id } > { store.name } <
+                                                /option>
+                                            ))
+                                        } <
+                                        /select> {
+                                            errors.selectedstore && ( <
+                                                div className = 'invalid-feedback' > { errors.selectedstore } <
+                                                /div>
+                                            )
+                                        } <
+                                        /div> <
+                                        /div> {
+                                            /* <div class="col form-check form-switch mt-3 ml-5 ">
+                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"/>
+                                                                    <label class="form-check-label " for="flexSwitchCheckDefault">Active /InAcive</label>
+                                                                </div> */
+                                        } <
+                                        div className = 'col-md-12 mb-3' >
+                                        <
+                                        button type = "submit"
+                                    className = "btn btn-secondary float-end" > Sava < /button> <
+                                        /div> <
+                                        /form> <
+                                        /div> <
+                                        /div> <
+                                        /div> <
+                                        /div> <
+                                        /div> 
+                                )
+                            }
 
-                        export default AddProduct;
+                            export default AddProduct;

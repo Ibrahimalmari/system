@@ -18,6 +18,8 @@ class Product extends Model
         'category_id',
         'brunch_id',
         'store_id',
+        'created_by',
+
     ];
 
 
@@ -33,6 +35,10 @@ public function brunch(){
     return  $this->belongsTo(Brunch::class);
  }
 
+ public function create_product_seller()
+ {
+     return $this->belongsTo(SellerMan::class);
+ }
 
 
-}
+};
