@@ -5,17 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Brunch extends Model
+class Store_Section extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'category_id',
-        'image',
+        'store_id',
+        'section_id',
     ];
 
-    public function category(){
-        return  $this->belongsTo(Category::class);
-     }
+    
 }

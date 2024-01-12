@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SellerMan;
 use App\Models\Store;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,9 +16,25 @@ class StoreController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index_admin()
     {
-        //
+        $store = Store::all();
+        return response()->json([
+           'status' => 200, 
+            'store' =>$store,
+           'message'=>'Registered Successfully',
+       ]);
+    }
+
+    public function index_seller($id)
+    {
+        $store =Store::where("seller_id",$id)->get();
+
+        return response()->json([
+           'status' => 200, 
+            'store' =>$store,
+           'message'=>'Registered Successfully',
+       ]);
     }
 
     /**
@@ -34,15 +53,19 @@ class StoreController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request , $id)
     {
         $validatedData = Validator::make($request->all(),[
             'name' => 'required',
             'address' => 'required',
+            'description'=>'required',
             'type' => 'required',
             'phone' =>'required',
-            'cover_photo' => 'required',
-            'open_time' => 'required',
+            'coverPhoto' => '',
+            'openTime' => 'required',
+            'seller_id' => 'required',
+            
+
 
     ]);
 
@@ -57,26 +80,32 @@ class StoreController extends Controller
         $fileImages = [];
         foreach($request->file('image') as $images){
         $imageName = $images->getClientOriginalName();
-        $path =$images->storeAs('store',$imageName ,'public');
-              
-        $fileImages[] = $path;
+        $filename =  time() . '.' . $imageName;
+        $images->move(public_path('stores'),$filename);
+    
+        $fileImages = $filename;
         }
-         $img = json_encode($fileImages);
+        //  $img = json_encode($fileImages);
+
+       
+
           $seller = Store::create([
             'name' => $request->name,
             'address'=> $request->address,
+            'description'=> $request->description,
             'personalNumber'=> $request->personalNumber,
             'type'=> $request->type,
             'phone'=> $request->phone,
-            'cover_photo'=>$img,
-            'open_time'=> $request->open_time,
-            'personalNumber'=> $request->personalNumber,
-             'seller_id'=> $request->seller_id,
+            'coverPhoto'=>$filename,
+            'openTime'=> $request->openTime,
+            'seller_id'=> $request->seller_id,
+            'created_by'=>$id,
           ]);
 
 
           return response()->json([
             'status' => 200, 
+            'created_by'=>$id,
             'message'=>'Store added successfully',
         ]);
 
@@ -103,7 +132,22 @@ class StoreController extends Controller
      */
     public function edit($id)
     {
-        //
+        $store = Store::find($id);
+
+    
+    if($store){
+        return response()->json([
+            'status' => 200, 
+            'store' =>$store
+        ]);
+    }
+
+    else{
+        return response()->json([
+            'status' => 404, 
+            'message' =>'No store Id Found'
+        ]);
+    }
     }
 
     /**
@@ -115,8 +159,57 @@ class StoreController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+        $store = Store::find($id);
+
+        if (!$store) {
+            return response()->json(['message' => 'السجل غير موجود'], 404);
+        }
+        
+        $fileImages = $store->image;
+        
+        // التحقق من وجود الصورة
+        if ($request->hasFile('image')) {
+            // حذف الصورة القديمة إذا كانت موجودة
+            if ($store->image) {
+                File::delete(public_path('stores/' . $store->image));
+            }
+            // إضافة الصورة الجديدة
+            $fileImages = [];
+            foreach($request->file('image') as $images){
+                $imageName = $images->getClientOriginalName();
+                $filename =  time() . '.' . $imageName;
+                $images->move(public_path('stores'),$filename);
+        
+                $fileImages[] = $filename;
+            }
+        }
+        
+        // تحديث السجل بما في ذلك حقل الصورة إذا كانت هناك صورة جديدة
+        $store->update([
+            'name' => $request->name,
+            'address'=> $request->address,
+            'description'=> $request->description,
+            'personalNumber'=> $request->personalNumber,
+            'type'=> $request->type,
+            'phone'=> $request->phone,
+            'coverPhoto'=>$filename,
+            'openTime'=> $request->openTime,
+            'seller_id'=> $request->seller_id,
+        ]);
+        
+        $changes = $store->getChanges();
+
+            if (empty($changes)) {
+                return response()->json(['message' => 'لم يتم إجراء أي تعديل'], 200);
+            }
+        
+        
+        return response()->json([
+            'message' => 'تم تحديث السجل بنجاح',
+            'store' => $store
+        ]);
+        
+}
 
     /**
      * Remove the specified resource from storage.
@@ -126,6 +219,19 @@ class StoreController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $seller = SellerMan::findOrFail($id);
+
+        
+        // حذف الصورة إذا كانت موجودة
+        if ($seller->image) {
+            Storage::delete('seller_men/' . $seller->image);
+        }
+
+        $seller->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'تم حذف البائع بنجاح.'
+        ]);
     }
 }

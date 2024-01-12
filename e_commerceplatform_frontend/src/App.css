@@ -1,0 +1,10 @@
+th {
+    font-family: 'Roboto', sans-serif;
+    /* استخدم اسم الخط الذي تفضله من Google Fonts */
+    font-weight: 700;
+    /* تحديد سمك الخط (bold) حسب الحاجة */
+    font-size: 16px;
+    /* حجم الخط حسب الحاجة */
+    color: #333;
+    /* لون الخط حسب الحاجة */
+}

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\SellerMan;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -11,6 +14,23 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function getUserStats()
+    {
+        $totalUsers = User::count();
+        $totalVendors = SellerMan::count();
+        $totalProducts = Product::count();
+
+        return response()->json([
+            'total_users' => $totalUsers,
+            'total_vendors' => $totalVendors,
+            'total_products' => $totalProducts,
+        ]);
+    }
+
+
+
+
     public function index()
     {
         //

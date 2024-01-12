@@ -16,7 +16,6 @@ body {
     vertical-align: middle;
     line-height: 1px;
     font-size: 26px;
-    color: #757575;
 }
 
 .icon,
@@ -42,18 +41,26 @@ body {
 
 /* Header  */
 
+
+/* تنسيقات CSS للهيدر */
+
 .header {
     grid-area: header;
     height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #ffffff;
     padding: 0 30px 0 30px;
-    box-shadow: 0 6px 7px -3px rgba(58, 73, 96, 0.35);
+    box-shadow: 0 6px 7px -3px rgba(0, 0, 0, 0.35);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
 }
 
 .menu-icon {
+    font-size: 25px;
     display: none;
 }
 
@@ -66,11 +73,12 @@ body {
 #sidebar {
     grid-area: sidebar;
     height: 100%;
-    background-color: #0e0f11;
-    color: white;
+    background-color: #1e2133;
+    box-shadow: 0 0 10px rgb(11, 8, 8);
+    color: #8d8d8d;
     overflow-y: auto;
-    transition: all 0.5s;
-    -webkit-transition: all 0.5s;
+    -webkit-transition: transform 0.8s ease;
+    transition: transform 0.8s ease;
 }
 
 .sidebar-title {
@@ -89,7 +97,6 @@ body {
     margin-top: 15px;
     font-size: 20px;
     font-weight: 700;
-    color: #0f0e0e;
 }
 
 .sidebar-list {
@@ -100,26 +107,23 @@ body {
 .sidebar-list-item {
     padding: 20px 20px 20px 20px;
     font-size: 18px;
+    transition-duration: 0.8s;
 }
 
 .sidebar-list-item:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: transparent;
     cursor: pointer;
+    padding-left: 30px;
 }
 
 .sidebar-list-item>a {
     text-decoration: none;
-    color: #9e9ea4;
+    color: #8d8d8d;
 }
 
 .sidebar-responsive {
     display: inline !important;
     position: absolute;
-    /*
-    we want the z-index of the sidebar higher so that
-    the charts are not showing over the sidebar 
-    on small screens
-  */
     z-index: 12 !important;
 }
 
@@ -134,6 +138,7 @@ body {
     overflow-y: auto;
     padding: 20px 20px;
     color: rgba(0, 0, 0, 0.95);
+    background-color: rgb(235, 235, 235);
 }
 
 .custom-submenu {

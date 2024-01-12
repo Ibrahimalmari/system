@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import swal from "sweetalert";
 import {
-    BsCart3,
+    BsFillBarChartFill,
     BsGrid1X2Fill,
     BsFillArchiveFill,
     BsFillGrid3X3GapFill,
@@ -34,10 +34,16 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
     const toggleStoreSublinks = () => {
         setShowStoreSublinks(!showStoreSublinks);
     };
-    const [showBrunchSublinks, setShowBrunchSublinks] = useState(false);
+    const [showBranchSublinks, setShowBranchSublinks] = useState(false);
 
-    const toggleBrunchSublinks = () => {
-        setShowBrunchSublinks(!showBrunchSublinks);
+    const toggleBranchSublinks = () => {
+        setShowBranchSublinks(!showBranchSublinks);
+    };
+
+    const [showSectionSublinks, setShowSectionSublinks] = useState(false);
+
+    const toggleSectionSublinks = () => {
+        setShowSectionSublinks(!showSectionSublinks);
     };
 
     useEffect(() => {
@@ -77,7 +83,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
         <
         div className = 'sidebar-brand' >
         <
-        BsCart3 className = 'icon_header' / > YAM <
+        BsFillBarChartFill className = 'icon_header' / > YAM <
         /div> <
         span className = 'icon close_icon'
         onClick = { OpenSidebar } > X < /span> <
@@ -167,11 +173,11 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
         li className = 'sidebar-list-item' >
         <
         div className = "sidebar-sublink-header"
-        onClick = { toggleBrunchSublinks } >
+        onClick = { toggleBranchSublinks } >
         <
         span className = 'main-product' >
         <
-        BsFillGrid3X3GapFill className = 'icon' / > Brunch <
+        BsFillGrid3X3GapFill className = 'icon' / > Branch <
         /span> <
         span className = "arrow-icon" >
         <
@@ -179,20 +185,62 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
         <
         /span> <
         /div> {
-            showBrunchSublinks && ( <
+            showBranchSublinks && ( <
                 ul className = 'sidebar-sublist gray-background' > { /* الروابط الفرعية للمنتج */ } <
                 li className = 'sidebar-sublist-item' >
                 <
-                Link to = "/seller/Brunch/"
+                Link to = "/seller/Branch/"
                 className = 'sublink' >
-                All Brunch <
+                All Branch <
                 /Link> <
                 /li> <
                 li className = 'sidebar-sublist-item' >
                 <
-                Link to = "/seller/Brunch/Add"
+                Link to = "/seller/Branch/Add"
                 className = 'sublink' >
-                Add Brunch <
+                Add Branch <
+                /Link> <
+                /li> <
+                /ul>
+            )
+        } <
+        /li> <
+        li className = 'sidebar-list-item' >
+        <
+        div className = "sidebar-sublink-header"
+        onClick = { toggleSectionSublinks } >
+        <
+        span className = 'main-product' >
+        <
+        BsFillGrid3X3GapFill className = 'icon' / > Section <
+        /span> <
+        span className = "arrow-icon" >
+        <
+        BsChevronRight / >
+        <
+        /span> <
+        /div> {
+            showSectionSublinks && ( <
+                ul className = 'sidebar-sublist gray-background' > { /* الروابط الفرعية للمنتج */ } <
+                li className = 'sidebar-sublist-item' >
+                <
+                Link to = "/seller/Section/"
+                className = 'sublink' >
+                All Section <
+                /Link> <
+                /li> <
+                li className = 'sidebar-sublist-item' >
+                <
+                Link to = "/seller/Section/Add"
+                className = 'sublink' >
+                Add Section <
+                /Link> <
+                /li> <
+                li className = 'sidebar-sublist-item' >
+                <
+                Link to = "/seller/Section/AddSectionToStore"
+                className = 'sublink' >
+                Add Section To Store <
                 /Link> <
                 /li> <
                 /ul>
@@ -219,16 +267,9 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
                 <
                 li className = 'sidebar-sublist-item' >
                 <
-                Link to = "/seller/Store/"
+                Link to = "/seller/MyStore/"
                 className = 'sublink' >
-                All Store <
-                /Link> <
-                /li> <
-                li className = 'sidebar-sublist-item' >
-                <
-                Link to = "/seller/Store/Add/"
-                className = 'sublink' >
-                Add Store <
+                My Stores <
                 /Link> <
                 /li> <
                 /ul>

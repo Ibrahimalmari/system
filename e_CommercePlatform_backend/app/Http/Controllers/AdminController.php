@@ -82,7 +82,7 @@ class AdminController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)   //Register
+    public function Register(Request $request)   //Register
     {
         $validatedData = Validator::make($request->all(),[
             'name' => 'required',

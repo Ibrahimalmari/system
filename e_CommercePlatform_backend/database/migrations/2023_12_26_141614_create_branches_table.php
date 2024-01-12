@@ -13,16 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('branches', function (Blueprint $table) {
             $table->id();
-            $table->text('name');
-            $table->string('description');
-            $table->double('price');
-            $table->text('images');
-            $table->integer('quantity');
+            $table->string('name');
+            $table->string('image')->nullable();
             $table->foreignId('category_id')->constrained("categories")->onUpdate('cascade')->onDelete('cascade')->default(0);
-            $table->foreignId('brunch_id')->constrained("brunches")->onUpdate('cascade')->onDelete('cascade')->default(0);
-            $table->foreignId('store_id')->constrained('stores')->onUpdate('cascade')->onDelete('cascade')->default(0);
+            $table->foreignId('created_by')->default(0)->constrained("seller_men")->onUpdate('cascade')->onDelete('cascade');
             $table->enum('status',['Active' ,'Inactive'])->default('Inactive');
             $table->timestamps();
         });
@@ -35,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('branches');
     }
 };

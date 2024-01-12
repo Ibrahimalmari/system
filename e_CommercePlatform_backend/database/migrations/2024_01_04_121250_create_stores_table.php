@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -17,15 +18,17 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('address');
+            $table->text('description');
             $table->string('personalNumber')->unique();
             $table->string('type');
             $table->string('phone');
-            $table->string('cover_photo');
-            $table->integer('order_recive');
-            $table->integer('order_done');
-            $table->integer('order_reject');
-            $table->date('open_time');
-            $table->foreignId('seller_id')->constrained('seller_men')->onUpdate('cascade')->onDelete('cascade')->default(0);
+            $table->string('coverPhoto');///cover_photo
+            $table->integer('orderRecive')->default(0);
+            $table->integer('orderDone')->default(0);
+            $table->integer('orderReject')->default(0);
+            $table->time('openTime');
+            $table->foreignId('seller_id')->constrained('seller_men')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('created_by')->constrained("admins")->onUpdate('cascade')->onDelete('cascade');
             $table->enum('status',['Active' ,'Inactive'])->default('Active');
             $table->timestamps();
         });

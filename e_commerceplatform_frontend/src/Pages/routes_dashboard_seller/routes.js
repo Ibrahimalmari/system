@@ -3,21 +3,25 @@ import AddCategory from "../dashboard_seller_pages/addcategory";
 import Dashboard from "../dashboard_seller_pages/Dashboard";
 import Product from "../dashboard_seller_pages/Product";
 import AddProduct from "../dashboard_seller_pages/addproduct";
-import Brunch from "../dashboard_seller_pages/Brunch";
-import AddBrunch from "../dashboard_seller_pages/addbrunch";
-import Store from "../dashboard_seller_pages/Store";
-import AddStore from "../dashboard_seller_pages/addstore";
+import Branch from "../dashboard_seller_pages/Branch";
+import AddBranch from "../dashboard_seller_pages/addbranch";
+import MyStore from "../dashboard_seller_pages/Store";
+import Section from "../dashboard_seller_pages/Section";
+import AddSection from "../dashboard_seller_pages/addsection";
+import AddSection_toStore from "../dashboard_seller_pages/addSection_toStore";
 const routes = [
     { path: '/seller', exact: true, name: 'Seller' },
     { path: '/Product', exact: true, name: 'product', component: Product },
     { path: '/Product/Add', exact: true, name: 'addproduct', component: AddProduct },
     { path: '/Category', exact: true, name: 'category', component: Category },
     { path: '/Category/Add', exact: true, name: 'addcategory', component: AddCategory },
-    { path: '/Brunch', exact: true, name: 'category', component: Brunch },
-    { path: '/Brunch/Add', exact: true, name: 'addbrunch', component: AddBrunch },
+    { path: '/Branch', exact: true, name: 'branch', component: Branch },
+    { path: '/Branch/Add', exact: true, name: 'addbranch', component: AddBranch },
     { path: '/Dashboard', exact: true, name: 'dashboard', component: Dashboard },
-    { path: '/Store', exact: true, name: 'store', component: Store },
-    { path: '/Store/Add', exact: true, name: 'addstore', component: AddStore },
+    { path: '/MyStore', exact: true, name: 'mystore', component: MyStore },
+    { path: '/Section/', exact: true, name: 'section', component: Section },
+    { path: '/Section/Add', exact: true, name: 'addsection', component: AddSection },
+    { path: '/Section/AddSectionToStore', exact: true, name: 'addsection_tostore', component: AddSection_toStore },
 
 ];
 

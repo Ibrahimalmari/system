@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import swal from "sweetalert";
-import { useNavigate } from "react-router-dom";
+//  import {useNavigate} from "react-router-dom";
 
 const AddCategory = ({ handleAddCategory }) => {
-        const navigate = useNavigate()
+        //   const navigate = useNavigate()
 
         const [name, setName] = useState('')
         const [image, setImage] = useState([]);
@@ -22,8 +22,8 @@ const AddCategory = ({ handleAddCategory }) => {
                 validationErrors.name = "Name is required";
             }
 
-            if (!image) {
-                validationErrors.image = "Image is required";
+            if (image.length === 0) {
+                validationErrors.image = 'Please upload at least one image';
             }
 
             if (!slug.trim()) {
@@ -48,7 +48,7 @@ const AddCategory = ({ handleAddCategory }) => {
 
         const handleSubmit = async(e) => {
             e.preventDefault();
-
+            const id = localStorage.getItem('id');
 
             const isFormValid = validateForm();
 
@@ -65,7 +65,7 @@ const AddCategory = ({ handleAddCategory }) => {
             });
 
             try {
-                const response = await axios.post('http://127.0.0.1:8000/api/CategoryAdd/', formDataToSend);
+                const response = await axios.post(`http://127.0.0.1:8000/api/CategoryAdd/${id}`, formDataToSend);
                 if (response.data.status === 401) {
                     console.log(response.data);
                     swal("warning", response.data.message, "warning")

@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import swal from "sweetalert";
+import { useNavigate } from "react-router-dom";
 
-const AddBrunch = ({ handleAddBrunch }) => {
+const AddBranch = ({ handleAddBranch }) => {
+
+        const navigate = useNavigate()
+
 
         const [name, setName] = useState('')
         const [image, setImage] = useState([]);
@@ -27,11 +31,18 @@ const AddBrunch = ({ handleAddBrunch }) => {
             const validationErrors = {};
 
 
+
             if (!name.trim()) {
-                validationErrors.name = "name is required";
+                validationErrors.name = 'Name is required';
             }
 
+            if (!selectedcategory) {
+                validationErrors.selectedcategory = 'Please select a category';
+            }
 
+            if (image.length === 0) {
+                validationErrors.image = 'Please upload at least one image';
+            }
 
             setErrors(validationErrors);
 
@@ -47,6 +58,7 @@ const AddBrunch = ({ handleAddBrunch }) => {
 
         const handleSubmit = async(e) => {
             e.preventDefault();
+            const id = localStorage.getItem('id');
 
 
             const isFormValid = validateForm();
@@ -64,14 +76,15 @@ const AddBrunch = ({ handleAddBrunch }) => {
 
 
             try {
-                const response = await axios.post('http://127.0.0.1:8000/api/BrunchAdd/', formDataToSend);
+                const response = await axios.post(`http://127.0.0.1:8000/api/BranchAdd/${id}`, formDataToSend);
                 if (response.data.status === 401) {
                     console.log(response.data);
                     swal("warning", response.data.message, "warning")
                 } else {
                     console.log(response.data);
-                    swal("success", response.data.message, "success")
-                        //  navigate('seller/Category/');
+                    swal("success", response.data.message, "success").then(() => {
+                        navigate('/seller/Branch/');
+                    })
                 }
             } catch (error) {
                 console.error(error.message);
@@ -90,7 +103,7 @@ const AddBrunch = ({ handleAddBrunch }) => {
             <
             div className = 'card-header' >
             <
-            h4 > Add Brunch <
+            h4 > Add Branch <
             /h4> <
             /div> <
             div className = 'card-body' >
@@ -106,25 +119,31 @@ const AddBrunch = ({ handleAddBrunch }) => {
             onChange = {
                 (e) => { setName(e.target.value) } }
             className = { `form-control  ${errors.name ? "is-invalid" : ""}` }
-            /> <
-            /div> {
-                errors.name && < div className = "invalid-feedback" > { errors.name } < /div>}
-
-                <
-                div className = 'col-md-6 mb-3' >
+            /> {
+                errors.name && < div className = "invalid-feedback" > { errors.name } < /div>} <
+                    /div> <
+                    div className = 'col-md-6 mb-3' >
                     <
                     label > image < /label> <
                     input type = "file"
                 name = "image[]"
-                className = "form-control"
+                className = { `form-control ${
+                            errors.image ? 'is-invalid' : ''
+                          }` }
                 onChange = { handleFileChange }
-                /> <
+                /> {
+                    errors.image && ( <
+                        div className = 'invalid-feedback' > { errors.image } < /div>
+                    )
+                } <
                 /div> <
                 div className = "col-md-6 mb-3" >
                     <
                     label > Select Category < /label> <
                     select
-                className = "form-control"
+                className = { `form-control ${
+                          errors.selectedcategory ? 'is-invalid' : ''
+                        }` }
                 name = "category_id"
                 value = { selectedcategory }
                 onChange = {
@@ -137,7 +156,12 @@ const AddBrunch = ({ handleAddBrunch }) => {
                             /option>
                         ))
                     } <
-                    /select>
+                    /select> {
+                        errors.selectedcategory && ( <
+                            div className = 'invalid-feedback' > { errors.selectedcategory } <
+                            /div>
+                        )
+                    }
 
                 <
                 /div> {
@@ -159,4 +183,4 @@ const AddBrunch = ({ handleAddBrunch }) => {
                     /div> 
             )
         }
-        export default AddBrunch;
+        export default AddBranch;

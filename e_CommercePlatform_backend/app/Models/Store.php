@@ -13,22 +13,40 @@ class Store extends Model
         'name',
         'address',
         'personalNumber',
+        'description',
         'type',
         'phone',
-        'cover_photo',
-        'order_recive',
-        'order_done',
-        'order_reject',
-        'open_time',
+        'coverPhoto',
+        'orderRecive',
+        'orderDone',
+        'orderReject',
+        'openTime',
         'seller_id',
+        'created_by',
     ];
 
+   
 
+    protected $with = ['seller'];
     public function seller(){
-        $this->belongsTo(SellerMan::class);
+       return  $this->belongsTo(SellerMan::class , "seller_id" ,"id");
     }
 
     public function product(){
-        $this->hasMany(Product::class);
+       return   $this->hasMany(Product::class);
     }
+    public function order(){
+        return   $this->hasMany(Order::class);
+     }
+
+    public function section(){
+        return  $this->belongsToMany(Section::class ,'store__sections');
+     } 
+
+
+     public function create_store_admin()  
+     {
+        return $this->belongsTo(Admin::class);
+     }   
+
 }

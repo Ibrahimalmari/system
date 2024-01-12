@@ -27,7 +27,7 @@ return new class extends Migration
            $table->string('PhotoOfPersonalID')->nullable();
            $table->date('birthday');
            $table->enum('status',['Active' ,'Inactive'])->default('Inactive');
-           $table->foreignId('role_id')->constrained("roles")->onUpdate('cascade')->onDelete('cascade');
+           $table->foreignId('role_id')->constrained("roles")->onUpdate('cascade')->onDelete('cascade')->default(0);
            $table->rememberToken();
             $table->timestamps();
         });

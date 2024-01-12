@@ -15,10 +15,19 @@ class Category extends Model
       'slug',
       'description',
       'image',
+      'created_by',
+
   ];
 
     
     public function product(){
       return  $this->hasMany(Product::class);
     }
+
+    public function create_category_seller()
+    {
+        return $this->belongsTo(SellerMan::class);
+    }
+    
+
 }

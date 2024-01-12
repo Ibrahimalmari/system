@@ -29,6 +29,9 @@ const AddSeller = ({ handleRegister }) => {
         }, [])
 
 
+
+
+
         const [errors, setErrors] = useState({});
 
         const validateForm = () => {
@@ -58,6 +61,13 @@ const AddSeller = ({ handleRegister }) => {
 
             if (!phone.trim()) {
                 validationErrors.phone = "Phone is required";
+            }
+            if (!selectedJob) {
+                validationErrors.selectedJob = 'Please select a role';
+            }
+
+            if (image.length === 0) {
+                validationErrors.image = 'Please upload at least one image';
             }
 
             if (!personalNumber.trim()) {
@@ -194,11 +204,10 @@ const AddSeller = ({ handleRegister }) => {
                             input
                         type = "file"
                         name = "image[]"
-                        multiple
-                        className = { `form-control-file ${errors.phone ? "is-invalid" : ""}` }
+                        className = { `form-control-file ${errors.image ? "is-invalid" : ""}` }
                         onChange = { handleFileChange }
                         /> {
-                            errors.phone && < div className = "invalid-feedback" > { errors.phone } < /div>} <
+                            errors.image && < div className = "invalid-feedback" > { errors.image } < /div>} <
                                 /div> <
                                 div className = "row align-items-center mt-4" > { /* Address */ } <
                                 div className = "col" >
@@ -227,16 +236,16 @@ const AddSeller = ({ handleRegister }) => {
                                     option value = "" > Select gender < /option> <
                                     option value = "male" > Male < /option> <
                                     option value = "female" > Female < /option> <
-                                    /select> <
-                                    /div> {
+                                    /select> {
                                         errors.gender && < div className = "invalid-feedback" > { errors.gender } < /div>} <
+                                            /div> <
                                             /div> <
                                             div className = "row align-items-center mt-4" > { /* role */ } <
                                             div className = "col" >
                                             <
                                             label > role: < /label> <
                                             select
-                                        className = { `form-control ` }
+                                        className = { `form-control  ${errors.selectedJob ? "is-invalid" : ""}` }
                                         name = "role_id"
                                         value = { selectedJob }
                                         onChange = {
@@ -249,7 +258,12 @@ const AddSeller = ({ handleRegister }) => {
                                                     /option>
                                                 ))
                                             } <
-                                            /select> <
+                                            /select> {
+                                                errors.selectedJob && ( <
+                                                    div className = 'invalid-feedback' > { errors.selectedJob } <
+                                                    /div>
+                                                )
+                                            } <
                                             /div> { /* Phone */ } <
                                             div className = "col" >
                                             <
